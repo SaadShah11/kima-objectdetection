@@ -1,0 +1,46 @@
+# Environment files
+.env
+*.env
+!.sample.env
+
+# Migration files
+MIGRATION_GUIDE.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data directories (large files)
+data/
+*.zip
+
+# Model files
+*.pt
+*.pth
+*.onnx
+*.tflite
+*.mlpackage
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# OS
+.DS_Store
+Thumbs.db

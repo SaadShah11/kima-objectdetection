@@ -1,0 +1,29 @@
+# Core dependencies for Kima Object Detection Training Pipeline
+
+# Ultralytics YOLO for model training
+# Note: Officially supports Python 3.8-3.12. May work on Python 3.13 but not officially supported.
+ultralytics>=8.1.0
+
+# Roboflow for dataset download
+roboflow>=1.1.0
+
+# Data processing and visualization
+pandas>=1.5.0
+matplotlib>=3.5.0
+pillow>=9.0.0
+
+# Configuration file handling
+pyyaml>=6.0
+
+# TensorFlow and TFLite support (optional but recommended for metadata verification)
+tensorflow>=2.10.0
+
+# Note: tflite-support is optional and may not be available on all platforms (especially Windows).
+# If you need metadata verification, try installing separately:
+#   pip install tflite-support
+# If installation fails, the code will still work but metadata verification will be skipped.
+# tflite-support>=0.1.0
+
+# Note: On Linux systems, you may need to install system dependencies:
+# sudo apt-get update && sudo apt-get install -y libavif-dev libheif-dev
+# These are required for pillow-avif-plugin support
