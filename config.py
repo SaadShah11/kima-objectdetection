@@ -10,6 +10,10 @@ This module contains all configuration settings including:
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # 1. Dataset Configurations
 # You can define multiple dataset configurations and switch between them.
@@ -38,11 +42,12 @@ MODEL_ARCHITECTURES = ['yolo11n', 'yolo11s']
 # 3. Training Hyperparameters
 # These parameters will be applied to all models during training.
 TRAINING_HYPERPARAMETERS = {
-    'epochs': 60,    # Number of training epochs. Use a smaller number (e.g., 1-5) for quick tests.
+    'epochs': 1,    # Number of training epochs. Use a smaller number (e.g., 1-5) for quick tests.
+    # 'epochs': 60,    # Number of training epochs. Use a smaller number (e.g., 1-5) for quick tests.
     'imgsz': 416,    # Image size for training and inference. 416 for mobile, 640 for higher accuracy.
     'batch': 16,     # Batch size. Adjust based on GPU memory.
     'patience': 10,  # Early stopping patience. Number of epochs to wait for improvement.
-    'device': 0,     # GPU device (0 for first GPU). Use 'cpu' if no GPU available.
+    'device': 'auto',  # Device selection: 'auto' (detect and use GPU if available, else CPU), 'cpu', or GPU index (0, 1, 2, etc.)
 }
 
 # 4. Workflow Flags

@@ -39,7 +39,45 @@ Kima-Main/
    pip install -r requirements.txt
    ```
 
-2. **On Linux systems, install system dependencies (optional, for AVIF support):**
+2. **GPU Support (Recommended for Faster Training):**
+   
+   The pipeline automatically detects and uses GPU if available, falling back to CPU if not. To enable GPU acceleration:
+   
+   **For NVIDIA GPUs (CUDA):**
+   
+   First, verify your GPU is detected:
+   ```bash
+   nvidia-smi
+   ```
+   
+   Then install PyTorch with CUDA support:
+   ```bash
+   # For CUDA 12.4 (recommended for newer GPUs)
+   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+   
+   # For CUDA 11.8 (if CUDA 12.4 doesn't work)
+   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+   ```
+   
+   **Verify GPU is detected:**
+   ```bash
+   python -c "import torch; print('CUDA available:', torch.cuda.is_available()); print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'N/A')"
+   ```
+   
+   You should see `CUDA available: True` and your GPU name if installation was successful.
+   
+   **Note:** If you already have PyTorch installed (CPU-only version), uninstall it first:
+   ```bash
+   pip uninstall torch torchvision torchaudio -y
+   ```
+   Then install the CUDA version as shown above.
+   
+   **Device Selection:**
+   - The pipeline uses `device: 'auto'` by default, which automatically uses GPU if available
+   - You can force CPU by setting `device: 'cpu'` in `config.py`
+   - You can specify a specific GPU by setting `device: 0` (for GPU 0), `device: 1` (for GPU 1), etc.
+
+3. **On Linux systems, install system dependencies (optional, for AVIF support):**
    ```bash
    sudo apt-get update && sudo apt-get install -y libavif-dev libheif-dev
    ```
@@ -73,7 +111,7 @@ TRAINING_HYPERPARAMETERS = {
     'imgsz': 416,
     'batch': 16,
     'patience': 10,
-    'device': 0,  # Use 'cpu' if no GPU available
+    'device': 'auto',  # 'auto' (use GPU if available, else CPU), 'cpu', or GPU index (0, 1, 2, etc.)
 }
 ```
 
@@ -144,6 +182,13 @@ data/
 
 ## Performance Tips
 
+### Training Performance
+- **Use GPU for training:** GPU acceleration can be 10-50x faster than CPU training
+- **Batch size:** Larger batch sizes (16-32) work better with GPU, smaller (4-8) for CPU
+- **Image size:** 416x416 is faster than 640x640 with minimal accuracy loss
+- **Model selection:** `yolo11n` trains faster than `yolo11s` with slightly lower accuracy
+
+### Inference Performance
 - Use image size 416x416 for fastest inference (vs 640x640)
 - Process every 2nd or 3rd frame if needed for 30+ FPS
 - Use GPU acceleration when available on device
@@ -151,11 +196,40 @@ data/
 
 ## Troubleshooting
 
-### GPU Not Available
-Set `device: 'cpu'` in `TRAINING_HYPERPARAMETERS` in `config.py`
+### GPU Not Detected
 
-### Out of Memory
-Reduce `batch` size in `TRAINING_HYPERPARAMETERS`
+**Symptoms:** Pipeline shows "CUDA available: False" or "Device Type: CPU"
+
+**Solutions:**
+1. **Verify GPU is detected by system:**
+   ```bash
+   nvidia-smi
+   ```
+   If this doesn't work, ensure NVIDIA drivers are installed.
+
+2. **Check PyTorch CUDA installation:**
+   ```bash
+   python -c "import torch; print('PyTorch version:', torch.__version__); print('CUDA available:', torch.cuda.is_available())"
+   ```
+   
+3. **If PyTorch shows CPU-only version:**
+   - Uninstall: `pip uninstall torch torchvision torchaudio -y`
+   - Reinstall with CUDA: `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124`
+   
+4. **If GPU still not detected:**
+   - Ensure CUDA driver version is compatible (check with `nvidia-smi`)
+   - Try CUDA 11.8 instead: `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118`
+   - As a fallback, set `device: 'cpu'` in `config.py` to use CPU training
+
+### Out of Memory (OOM) Errors
+
+**Symptoms:** Training crashes with CUDA out of memory errors
+
+**Solutions:**
+- Reduce `batch` size in `TRAINING_HYPERPARAMETERS` (e.g., from 16 to 8 or 4)
+- Reduce `imgsz` (image size) from 640 to 416
+- Close other applications using GPU memory
+- Use a smaller model architecture (e.g., `yolo11n` instead of `yolo11s`)
 
 ### Roboflow API Key Issues
 Set the `ROBOFLOW_API_KEY` environment variable:

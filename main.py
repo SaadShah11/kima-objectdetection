@@ -20,6 +20,7 @@ from src import data_processing
 from src import model_training
 from src import visualization
 from src import archiving
+import torch
 
 
 def main():
@@ -37,6 +38,19 @@ def main():
     print("  5. Generate comparison reports and visualizations")
     print("  6. Archive all outputs")
     print("="*80)
+    
+    # Check device availability early
+    device_preference = config.TRAINING_HYPERPARAMETERS.get('device', 'auto')
+    device_string, device_info = model_training.detect_and_select_device(device_preference)
+    print("\n" + "="*80)
+    print("SYSTEM DEVICE DETECTION")
+    print("="*80)
+    model_training.print_device_info(device_info)
+    print(f"Device preference from config: {device_preference}")
+    print(f"Selected device for training: {device_info['device_type']}")
+    if device_info['device_type'] == 'GPU' and 'device_name' in device_info:
+        print(f"GPU Name: {device_info['device_name']}")
+    print("="*80 + "\n")
     
     # Step 1: Prepare all datasets
     print("\n[STEP 1] Preparing datasets...")

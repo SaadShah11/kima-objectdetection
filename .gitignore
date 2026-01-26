@@ -20,7 +20,6 @@ ENV/
 .venv
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -29,6 +28,11 @@ ENV/
 # Data directories (large files)
 data/
 *.zip
+
+# Root level directories that should be in data/
+runs/
+weights/
+yolo*.pt
 
 # Model files
 *.pt
@@ -44,3 +48,7 @@ data/
 # OS
 .DS_Store
 Thumbs.db
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
+branch_structure.json

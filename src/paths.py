@@ -35,6 +35,7 @@ class PathManager:
         self.outputs_dir = self.data_dir / 'outputs'
         self.datasets_dir = self.data_dir / 'datasets'
         self.runs_dir = self.data_dir / 'runs' / 'all_trainings'
+        self.weights_dir = self.data_dir / 'weights'  # For pre-trained model weights
         
         # Create directories if they don't exist
         self._create_directories()
@@ -44,6 +45,7 @@ class PathManager:
         self.outputs_dir.mkdir(parents=True, exist_ok=True)
         self.datasets_dir.mkdir(parents=True, exist_ok=True)
         self.runs_dir.mkdir(parents=True, exist_ok=True)
+        self.weights_dir.mkdir(parents=True, exist_ok=True)
     
     def get_dataset_output_dir(self, dataset_alias):
         """
@@ -113,6 +115,33 @@ class PathManager:
             Path to models directory
         """
         return self.outputs_dir / 'models'
+    
+    def get_android_models_dir(self):
+        """
+        Get Android models directory (TFLite)
+        
+        Returns:
+            Path to Android models directory
+        """
+        return self.outputs_dir / 'models' / 'android'
+    
+    def get_ios_models_dir(self):
+        """
+        Get iOS models directory (CoreML)
+        
+        Returns:
+            Path to iOS models directory
+        """
+        return self.outputs_dir / 'models' / 'ios'
+    
+    def get_weights_dir(self):
+        """
+        Get directory for pre-trained model weights
+        
+        Returns:
+            Path to weights directory
+        """
+        return self.weights_dir
     
     def get_comparison_csv_path(self):
         """
